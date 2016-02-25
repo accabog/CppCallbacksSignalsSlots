@@ -1,3 +1,10 @@
+/*
+ * SignalSlot.h
+ *
+ *  Created on: 14 feb. 2016
+ *      Author: alexandru.bogdan
+ */
+
 #ifndef SIGNALSLOT_H_
 #define SIGNALSLOT_H_
 
@@ -35,7 +42,7 @@ public:
 		_isEmitting = true;
 		for (unsigned char i = 0; i < NrSlots; i++)
 		{
-			if (_slots[i] != NULL)
+			if (_slots[i] != (SlotBase<Args ...> *) 0)
 				(*_slots[i])(args ...);
 		}
 		_isEmitting = false;
@@ -45,7 +52,7 @@ public:
 	{
 		for (unsigned char i = 0; i < NrSlots; i++)
 		{
-			if (_slots[i] == NULL)
+			if (_slots[i] == (SlotBase<Args ...> *) 0)
 			{
 				_slots[i] = slot;
 				return true;
@@ -60,7 +67,7 @@ public:
 		{
 			if (_slots[i] == slot)
 			{
-				_slots[i] = NULL;
+				_slots[i] = (SlotBase<Args ...> *) 0;
 				return true;
 			}
 		}
