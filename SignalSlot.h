@@ -27,7 +27,7 @@ public:
 	explicit FunctionSlot(typename FunctionCallback<void, Args ...>::F f) : FunctionCallback<void, Args ...>(f) { }
 };
 
-template<unsigned char NrSlots, typename ... Args>
+template<unsigned int NrSlots, typename ... Args>
 class Signal
 {
 public:
@@ -40,9 +40,9 @@ public:
 			return;
 
 		_isEmitting = true;
-		for (unsigned char i = 0; i < NrSlots; i++)
+		for (unsigned int i = 0; i < NrSlots; i++)
 		{
-			if (_slots[i] != (SlotBase<Args ...> *) 0)
+			if (_slots[i] != nullptr)
 				(*_slots[i])(args ...);
 		}
 		_isEmitting = false;
@@ -50,9 +50,9 @@ public:
 
 	bool Connect(SlotBase<Args ...> *slot)
 	{
-		for (unsigned char i = 0; i < NrSlots; i++)
+		for (unsigned int i = 0; i < NrSlots; i++)
 		{
-			if (_slots[i] == (SlotBase<Args ...> *) 0)
+			if (_slots[i] == nullptr)
 			{
 				_slots[i] = slot;
 				return true;
@@ -63,11 +63,11 @@ public:
 
 	bool Disconnect(SlotBase<Args ...> *slot)
 	{
-		for (unsigned char i = 0; i < NrSlots; i++)
+		for (unsigned int i = 0; i < NrSlots; i++)
 		{
 			if (_slots[i] == slot)
 			{
-				_slots[i] = (SlotBase<Args ...> *) 0;
+				_slots[i] = nullptr;
 				return true;
 			}
 		}
