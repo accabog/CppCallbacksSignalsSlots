@@ -13,18 +13,18 @@
 template<typename ... Args>
 class SlotBase: virtual public CallbackBase<void, Args ...> { };
 
-template<class T, typename ... Args>
-class MethodSlot: public MethodCallback<T, void, Args ...>, virtual public SlotBase<Args ...>
-{
-public:
-	MethodSlot(T &t, typename MethodCallback<T, void, Args ...>::F f) : MethodCallback<T, void, Args ...>(t, f) { }
-};
-
 template<typename ... Args>
 class FunctionSlot: public FunctionCallback<void, Args ...>, virtual public SlotBase<Args ...>
 {
 public:
 	explicit FunctionSlot(typename FunctionCallback<void, Args ...>::F f) : FunctionCallback<void, Args ...>(f) { }
+};
+
+template<class T, typename ... Args>
+class MethodSlot: public MethodCallback<T, void, Args ...>, virtual public SlotBase<Args ...>
+{
+public:
+	MethodSlot(T &t, typename MethodCallback<T, void, Args ...>::F f) : MethodCallback<T, void, Args ...>(t, f) { }
 };
 
 template<unsigned int NrSlots, typename ... Args>
