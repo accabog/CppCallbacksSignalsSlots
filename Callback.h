@@ -28,7 +28,7 @@ class MethodCallback: virtual public CallbackBase<R, Args ...>
 public:
 	typedef R (T::*F)(Args ...);
 
-	MethodCallback(T& t, F f) :	_t(&t), _f(f) {	}
+	MethodCallback(T& t, F f) : _t(&t), _f(f) { }
 	R operator()(Args ... args) const { return (_t->*_f)(args ...); }
 
 private:
