@@ -15,8 +15,8 @@ class FunctionCallback: virtual public CallbackBase<R, Args ...>
 public:
 	typedef R (*F)(Args ...);
 
-	explicit FunctionCallback(F cb) : _cb(cb) {	}
-	R operator()(Args ... args) const {	return _cb(args ...); }
+	explicit FunctionCallback(F cb) : _cb(cb) { }
+	R operator()(Args ... args) const { return _cb(args ...); }
 
 private:
 	F _cb;
@@ -29,7 +29,7 @@ public:
 	typedef R (T::*F)(Args ...);
 
 	MethodCallback(T& t, F f) :	_t(&t), _f(f) {	}
-	R operator()(Args ... args) const {	return (_t->*_f)(args ...);	}
+	R operator()(Args ... args) const { return (_t->*_f)(args ...); }
 
 private:
 	T* _t;
