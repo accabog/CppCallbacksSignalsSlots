@@ -11,17 +11,14 @@
 #include "Callback.h"
 
 template<typename ... Args>
-class SlotBase: virtual public CallbackBase<void, Args ...> { };
-
-template<typename ... Args>
-class FunctionSlot: public FunctionCallback<void, Args ...>, virtual public SlotBase<Args ...>
+class FunctionSlot: public FunctionCallback<void, Args ...>
 {
 public:
 	explicit FunctionSlot(typename FunctionCallback<void, Args ...>::F f) : FunctionCallback<void, Args ...>(f) { }
 };
 
 template<class T, typename ... Args>
-class MethodSlot: public MethodCallback<T, void, Args ...>, virtual public SlotBase<Args ...>
+class MethodSlot: public MethodCallback<T, void, Args ...>
 {
 public:
 	MethodSlot(T &t, typename MethodCallback<T, void, Args ...>::F f) : MethodCallback<T, void, Args ...>(t, f) { }
@@ -48,7 +45,7 @@ public:
 		_isEmitting = false;
 	}
 
-	bool Connect(SlotBase<Args ...> *slot)
+	bool Connect(CallbackBase<void, Args ...> *slot)
 	{
 		for (unsigned int i = 0; i < NrSlots; i++)
 		{
@@ -61,7 +58,7 @@ public:
 		return false;
 	}
 
-	bool Disconnect(SlotBase<Args ...> *slot)
+	bool Disconnect(CallbackBase<void, Args ...> *slot)
 	{
 		for (unsigned int i = 0; i < NrSlots; i++)
 		{
@@ -75,7 +72,7 @@ public:
 	}
 
 private:
-	SlotBase<Args ...> *_slots[NrSlots];
+	CallbackBase<void, Args ...> *_slots[NrSlots];
 	bool _isEmitting;
 };
 
