@@ -1,35 +1,51 @@
-#include "SignalSlot.h"
+#ifndef CALLBACK_H_
+#define CALLBACK_H_
 
-#include <iostream>
-#include <string>
-
-using namespace std;
-
-class CallbackClass {
-    public:
-    CallbackClass() {}
-    ~CallbackClass() {}
-    
-    void CallbackMethod(std::string text) {cout << "Callback says: " << text << " !" << endl;}
-    void SlotMethod0(int i, std::string text) {cout << "Slot0: Signal " << i << " says: " << text << " !" << endl;}
-    void SlotMethod1(int i, std::string text) {cout << "Slot1: Signal " << i << " says: " << text << " !" << endl;}
+template<typename R, typename ... Args>
+class CallbackBase
+{
+public:
+	virtual R operator()(Args ...) const noexcept = 0;
+	virtual ~CallbackBase()	{ }
 };
 
-CallbackClass callbackClass;
-MethodCallback<CallbackClass, void, string> myCallback(callbackClass, &CallbackClass::CallbackMethod);
-
-Signal<3, int, string> mySignal;
-MethodSlot<CallbackClass, int, string> mySlot0(callbackClass, &CallbackClass::SlotMethod0);
-MethodSlot<CallbackClass, int, string> mySlot1(callbackClass, &CallbackClass::SlotMethod1);
-
-int main()
+template<typename R, typename ... Args>
+class FunctionCallback: public CallbackBase<R, Args ...>
 {
-    myCallback("Hello");
-	
-    mySignal.Connect(&mySlot0);
-    mySignal.Connect(&mySlot1);
-    
-    mySignal.Emit(1, "Goodbye");
-    
-    return 0;
+public:
+	typedef R (*F)(Args ...);
+
+	explicit FunctionCallback(F cb) : _cb(cb) { }
+	R operator()(Args ... args) const noexcept { return _cb(args ...); }
+
+private:
+	F _cb;
+};
+
+template<class T, typename R, typename ... Args>
+class MethodCallback: public CallbackBase<R, Args ...>
+{
+public:
+	typedef R (T::*F)(Args ...);
+
+	MethodCallback(T& t, F f) : _t(&t), _f(f) { }
+	R operator()(Args ... args) const noexcept { return (_t->*_f)(args ...); }
+
+private:
+	T* _t;
+	F _f;
+};
+
+template<class T, typename R, typename ... Args>
+MethodCallback<T, R, Args ...> MakeCallback(T& t, R (T::*f)(Args ...))
+{
+	return MethodCallback<T, R, Args ...>(t, f);
 }
+
+template<typename R, typename ... Args>
+FunctionCallback<R, Args ...> MakeCallback(R (*cb)(Args ...))
+{
+	return FunctionCallback<R, Args ...>(cb);
+}
+
+#endif /* CALLBACK_H_ */
