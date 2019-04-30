@@ -6,7 +6,6 @@ class CallbackBase
 {
 public:
 	virtual R operator()(Args ...) const noexcept = 0;
-	virtual ~CallbackBase()	{ }
 };
 
 template<typename R, typename ... Args>
