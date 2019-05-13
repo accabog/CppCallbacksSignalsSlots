@@ -9,7 +9,7 @@ public:
 };
 
 template<typename R, typename ... Args>
-class FunctionCallback: virtual public CallbackBase<R, Args ...>
+class FunctionCallback: public CallbackBase<R, Args ...>
 {
 public:
 	typedef R (*F)(Args ...);
@@ -22,7 +22,7 @@ private:
 };
 
 template<class T, typename R, typename ... Args>
-class MethodCallback: virtual public CallbackBase<R, Args ...>
+class MethodCallback: public CallbackBase<R, Args ...>
 {
 public:
 	typedef R (T::*F)(Args ...);
